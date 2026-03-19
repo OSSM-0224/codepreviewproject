@@ -2,14 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function PostForm({ addPost, updatePost, editPost }) {
-  //React Hook Form use kar rahe hai
   const { register, handleSubmit, reset, setValue } = useForm();
-  // file input ke liye ref
   const fileRef = useRef();
-  // Image preview state
   const [preview, setPreview] = useState(null);
 
-  // jab edit mode aaye to data fill karne ke liye
   useEffect(() => {
     if (editPost) {
       setValue("title", editPost.title);
@@ -18,7 +14,6 @@ export default function PostForm({ addPost, updatePost, editPost }) {
     }
   }, [editPost]);
 
-  // image select karne par preview banyega
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -27,12 +22,8 @@ export default function PostForm({ addPost, updatePost, editPost }) {
     }
   };
 
-  // form submit function
   const onSubmit = (data) => {
-    const postData = {
-      ...data,
-      image: preview
-    };
+    const postData = { ...data, image: preview };
 
     if (editPost) {
       updatePost({ ...postData, id: editPost.id });
@@ -47,47 +38,54 @@ export default function PostForm({ addPost, updatePost, editPost }) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="bg-[#291d1c] p-6 rounded-xl shadow-lg mb-8"
+      className="bg-[#291d1c] p-5 sm:p-6 rounded-xl shadow-lg mb-8 border border-[#3f3131]"
     >
-      <h2 className="text-2xl font-bold mb-4 text-[#ffb3ad]">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-[#ffb3ad]">
         {editPost ? "Edit Entry" : "Create Entry"}
       </h2>
 
-      {/* Image Upload */}
-      <div className="mb-4">
+      {/*Upload Box*/}
+      <div
+        onClick={() => fileRef.current.click()}
+        className="border-2 border-dashed border-[#5b403e] rounded-xl p-4 text-center cursor-pointer hover:border-[#ffb3ad] transition mb-4"
+      >
+        <p className="text-sm text-[#e4beba]">
+          Click to upload image
+        </p>
         <input
           type="file"
           ref={fileRef}
           onChange={handleImage}
-          className="text-sm"
+          className="hidden"
         />
+      </div>
 
-        {/* Preview show */}
-        {preview && (
+      {/*Preview card*/}
+      {preview && (
+        <div className="mb-4 bg-[#160b0b] rounded-xl overflow-hidden border border-[#3f3131]">
           <img
             src={preview}
             alt="preview"
-            className="mt-3 w-full h-48 object-cover rounded"
+            className="w-full h-40 sm:h-52 object-cover"
           />
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Title input */}
+      {/*Title*/}
       <input
         {...register("title", { required: true })}
         placeholder="Exhibition Title"
-        className="w-full mb-4 p-3 rounded bg-[#160b0b] text-white"
+        className="w-full mb-3 p-3 rounded bg-[#160b0b] text-white text-sm sm:text-base"
       />
 
-      {/* Description */}
+      {/*Description*/}
       <textarea
         {...register("description", { required: true })}
         placeholder="Narrative & Context"
-        className="w-full mb-4 p-3 rounded bg-[#160b0b] text-white"
+        className="w-full mb-4 p-3 rounded bg-[#160b0b] text-white text-sm sm:text-base"
       />
 
-      {/* Submit button */}
-      <button className="w-full bg-gradient-to-r from-red-500 to-red-900 py-3 rounded-full font-bold">
+      <button className="w-full bg-linear-to-r from-red-500 to-red-900 py-3 rounded-full font-bold hover:scale-105 transition">
         {editPost ? "Update Post" : "Create Post"}
       </button>
     </form>
